@@ -14,10 +14,25 @@ export default new Router({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      component: () => import('./views/About.vue')
+    },
+    {
+      path: '/lottery/lottery', // 抽奖
+      name: 'lottery',
+      component (resolve) {
+        require.ensure(['../src/views/lottery/lottery.vue'], () => {
+          resolve(require('../src/views/lottery/lottery.vue'))
+        })
+      }
+    },
+    {
+      path: '/lottery/lotteryRecord', // 获奖记录
+      name: 'lotteryRecord',
+      component (resolve) {
+        require.ensure(['../src/views/lottery/lotteryRecord.vue'], () => {
+          resolve(require('../src/views/lottery/lotteryRecord.vue'))
+        })
+      }
     }
   ]
 })
