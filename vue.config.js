@@ -1,8 +1,5 @@
 module.exports = {
-	baseUrl: process.env.NODE_ENV === 'production' ? '/' : './',
-	// baseUrl: '/',
-	//baseUrl: './',
-	devServer:{
+    devServer:{
 		// port:8080, //端口号
 		// https:false,
 		// open:false, //配置自动启动浏览器
@@ -13,5 +10,13 @@ module.exports = {
 		// 		changeOrigin:true,
 		// 	}
 		// }
-	}
+	},
+
+    publicPath: './',
+    outputDir: undefined,
+    assetsDir: undefined,
+    runtimeCompiler: undefined,
+    productionSourceMap: undefined,
+    parallel: undefined,
+    css: undefined
 }

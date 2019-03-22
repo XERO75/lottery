@@ -57,14 +57,14 @@
         </div>
         <div class="havePrize" v-if="havePrizeShow">
           <div class="oneBar">
-            <img src="../../assets/img/lottery/yellowCycle.png" />
+            <img src="../../assets/img/lottery/congra.png" />
           </div>
           <p>恭喜您抽中{{prizeName}}</p>
-          <!-- <div class="proImg">
+          <div class="proImg">
             <img :src="prizeUrl" alt="">
-          </div> -->
+          </div>
           <div class="btn" @click="lotteryRecord">
-            <a>立即领取</a>
+            <!-- <a>立即领取</a> -->
           </div>
         </div>
         <div class="haveLottery" v-if="haveLottery">
@@ -88,7 +88,7 @@ import noSelect from '@/assets/img/lottery/border.png'
 import isSelect from '@/assets/img/lottery/borderSelect.png'
 // import notStart from '@/assets/img/lottery/noStart.png'
 // import endLottery from '@/assets/img/lottery/endLottery.png'
-// import prizeBtn from '@/assets/img/lottery/prizeBtn.png'
+import prizeBtn from '@/assets/img/lottery/prizeBtn.png'
 import { Toast } from 'mint-ui'
 export default {
   data () {
@@ -143,9 +143,8 @@ export default {
   },
   methods: {
     get () {
-      this.$axios.get('../../../data/lotteryInfo.json').then((myData) => {
+      this.$axios.get('http://localhost:8080/data/lotteryInfo.json').then((myData) => {
         let res = myData.data
-        console.log(res)
         if (res.success) {
           document.title = res.data.title
           this.remainingTimes = res.data.remainingTimes
@@ -184,13 +183,13 @@ export default {
       this.$nextTick(() => {
         if (c < s) { // 当前时间小于开始时间，未开始
           this.startStatus = 0
-          // this.$refs.pice[4].style.backgroundImage = 'url(' + notStart + ')'
+          this.$refs.pice[4].style.backgroundImage = 'url(' + notStart + ')'
         } else if (c > s && c < e) { // 当前时间大于开始时间，并且小于结束时间，已经开始未结束
           this.startStatus = 1
-          // this.$refs.pice[4].style.backgroundImage = 'url(' + prizeBtn + ')'
+          this.$refs.pice[4].style.backgroundImage = 'url(' + prizeBtn + ')'
         } else if (c > e) { // 当前时间大于结束时间，已经结束
           this.startStatus = 2
-          // this.$refs.pice[4].style.backgroundImage = 'url(' + endLottery + ')'
+          this.$refs.pice[4].style.backgroundImage = 'url(' + endLottery + ')'
         }
       })
     },
@@ -337,7 +336,9 @@ export default {
     prizeInfo () {
       setTimeout(() => {
         this.prizeInfoShow = true
-        this.havePrizeShow = true
+        // 弹出中奖
+        // this.havePrizeShow = true
+        window.location.href="https://info.jslcmgs.com/index.html#/";
       }, 800)
     },
     close () { // 关闭没中奖
@@ -688,10 +689,10 @@ export default {
         }
       }
       .btn {
-        width: 3.7rem;
+        width: 2.7rem;
         height: 0.9rem;
         margin: 0 auto;
-        background: url("~@/assets/img/lottery/btn.png") 0 0 no-repeat;
+        background: url("~@/assets/img/lottery/button.png") 0 0 no-repeat;
         // background-size: 100%;
         font-size: 0.36rem;
         color: #fff;
@@ -777,21 +778,23 @@ export default {
       }
     }
     .havePrize {
-      width: 5.3rem; // height: 6.1rem;
-      padding-bottom: 0.5rem;
+      width: 6.5rem; // height: 6.1rem;
+      padding-bottom: 1.5rem;
       border-radius: 0.4rem;
       position: absolute;
-      top: 5.5rem;
-      left: 2.4rem;
-      background: #fff url('../../assets/img/lottery/prizinig.png') no-repeat;
-      background-position: top center;
-      background-size: 5.3rem 1.42rem;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -53%);
+      background: #fff url('../../assets/img/lottery/pumpBg.png') no-repeat;
+      // background-size:cover;
+      background-position: center;
+      // background-size: 5.3rem 1.42rem;
       .oneBar {
-        width: 1.18rem;
-        height: 0.46rem;
         position: absolute;
-        top: -0.1rem;
-        right: 1.1rem;
+        width: 100%;
+        // height: 1rem /* 20/75 */;
+        top: .213333rem /* 16/75 */;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;
@@ -815,19 +818,21 @@ export default {
         }
       }
       .btn {
-        width: 3.7rem;
+        position: absolute;
+        bottom: 0;
+        left: 35%;
+        width: 2rem;
         height: 0.9rem;
         margin: 0 auto;
-        background: url("../../assets/img/lottery/btn.png") no-repeat;
+        background: url("../../assets/img/lottery/button.png") no-repeat;
         background-size: 100%;
-        text-align: center;
-        a {
-          font-size: 0.36rem;
-          color: #fff;
-          line-height: 0.9rem;
-          text-align: center;
-          font-weight: 600;
-        }
+        // a {
+        //   font-size: 0.36rem;
+        //   color: #fff;
+        //   line-height: 0.9rem;
+        //   text-align: center;
+        //   font-weight: 600;
+        // }
       }
     }
   }
