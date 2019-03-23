@@ -6,7 +6,7 @@
       <div class="box">
         <img src="https://i.loli.net/2019/03/11/5c86219789157.png" alt="呼吸底灯" class="img1">
         <img src="https://i.loli.net/2019/03/11/5c8621978d058.png" alt="呼吸灯" class="img2">
-        <div v-for="imgLi in prizeList" :key="imgLi.picUrlDesc" ref="pice">
+        <div v-for="imgLi in prizeList" :key="imgLi.picUrlDesc" ref="pice" :style="{'backgroundImage':'url('+imgLi.bgSrc+')'}">
           <img :src="imgLi.picUrlDesc" v-if="imgLi.picUrlDesc" />
         </div>
       </div>
@@ -17,7 +17,7 @@
           <li>每人每天限抽奖一次</li>
           <li>活动时间为：2019/03/15-2019/04/15</li>
           <li>兑换产品期限为中奖10天以内，逾期无效；</li>
-          <li>活动最终解释权归万可传媒所有;</li>
+          <li>本活动拥有解释权;</li>
         </ol>
       </div>
       <div class="prizers">
@@ -63,9 +63,10 @@
           <div class="proImg">
             <img :src="prizeUrl" alt="">
           </div>
-          <div class="btn" @click="lotteryRecord">
-            <!-- <a>立即领取</a> -->
+          <div class="btn" @click="OnJump">
           </div>
+          <!-- <div class="btn" @click="lotteryRecord">
+          </div> -->
         </div>
         <div class="haveLottery" v-if="haveLottery">
           <div class="close" @click="close()">
@@ -86,10 +87,12 @@
 <script>
 import noSelect from '@/assets/img/lottery/border.png'
 import isSelect from '@/assets/img/lottery/borderSelect.png'
-// import notStart from '@/assets/img/lottery/noStart.png'
-// import endLottery from '@/assets/img/lottery/endLottery.png'
+import notStart from '@/assets/img/lottery/noStart.png'
+import endLottery from '@/assets/img/lottery/endLottery.png'
 import prizeBtn from '@/assets/img/lottery/prizeBtn.png'
 import { Toast } from 'mint-ui'
+import ecDo from '@/assets/js/ec-do-2.0.0.js'
+
 export default {
   data () {
     return {
@@ -125,7 +128,8 @@ export default {
       prizeUrl: '', // 奖品图片
       prizers: [], // 获奖名单
       timeFlag: 0, // 时间标记，抽奖请求时间过长，则返回错误
-      startStatus: '' // 活动开始的状态
+      startStatus: '', // 活动开始的状态
+      jumpUrl: ''
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -133,8 +137,10 @@ export default {
     next()
   },
   mounted () {
+    console.log(ecDo.trim('  1235asd '))
     this.$nextTick(() => {
       this.get()
+      this.onInit()
     })
   },
   // 销毁组件重新加载
@@ -145,12 +151,13 @@ export default {
     get () {
       this.$axios.get('http://localhost:8080/data/lotteryInfo.json').then((myData) => {
         let res = myData.data
+        console.log('res:', res)
         if (res.success) {
           document.title = res.data.title
           this.remainingTimes = res.data.remainingTimes
-          this.hasRecord = res.data.hasDrawed
-          this.prizeDesc = res.data.prizeDesc.split('$utf8$')
-          this.lotteryDesc = res.data.lotteryDesc.split('$utf8$')
+          this.hasRecord = res.data.hasDrawed  //是否显示获奖情况
+          this.prizeDesc = res.data.prizeDesc.split('$utf8$') // 奖品说明
+          this.lotteryDesc = res.data.lotteryDesc.split('$utf8$') // 活动说明
           res.data.prizeInfo.forEach((item) => {
             this.$set(item, 'bgSrc', noSelect)
           })
@@ -275,19 +282,21 @@ export default {
       this.$nextTick(() => {
         this.$refs.pice[4].onclick = () => {
           if (this.remainingTimes > 0) { // 判断剩余抽奖次数
-            // console.log(this.$refs.pice)
             if (this.clickFlage) {
               if (this.startStatus === 1) { // 活动开始
                 this.clickFlage = false// 不能点击
                 this.timer1 = setInterval(this.move, 100)
+                this.$axios.get('/data/adver/v2?gid=1').then(res => {
+                  if(res.data.errCode === 10000) {
+                    this.jumpUrl = res.data.url
+                  }
+                })
                 this.$axios.get('../../../data/prizeInfo.json').then((myData) => {
                   let res = myData.data
-                  console.log(res)
                   if (res.success) {
                     this.prozeLevel = res.data.level
                     this.prizeName = res.data.commodityName
                     this.prizeUrl = res.data.picUrlWinning
-                    console.log(this.prozeLevel)
                     setTimeout(() => {
                       clearInterval(this.timer1)
                       this.lowSpeed()
@@ -337,8 +346,8 @@ export default {
       setTimeout(() => {
         this.prizeInfoShow = true
         // 弹出中奖
-        // this.havePrizeShow = true
-        window.location.href="https://info.jslcmgs.com/index.html#/";
+        this.havePrizeShow = true
+        // window.location.href="https://info.jslcmgs.com/index.html#/";
       }, 800)
     },
     close () { // 关闭没中奖
@@ -357,6 +366,14 @@ export default {
         query: {
           lotteryDefineId: this.lotteryDefineId
         }
+      })
+    },
+    OnJump() {
+      window.location.href= this.jumpUrl || "https://info.jslcmgs.com/index.html#/";
+    },
+    onInit() {
+      this.$axios.get('/data/visit?gid=1').then(res => {
+        console.log('res',res)
       })
     }
   }
@@ -464,7 +481,7 @@ export default {
       text-align: left;
       margin-left: .3rem;
       li {
-        padding: .1rem 0;
+        padding: .1rem;
         line-height: 18px;
         list-style-type:decimal;
         list-style-position:inside;
@@ -811,9 +828,9 @@ export default {
       .proImg {
         width: 4.1rem;
         height: 2rem;
-        margin: 0 auto 0.36rem;
+        margin: 0.36rem auto 0.36rem;
         img {
-          width: 100%;
+          // width: 100%;
           height: 100%;
         }
       }

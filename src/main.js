@@ -9,6 +9,9 @@ import 'lib-flexible'
 import './assets/js/browser.js'
 import './assets/js/rem'
 import './assets/less/public.less'
+import ecDo from './assets/js/ec-do-2.0.0.js'
+console.log(ecDo.trim('  1235asd '))
+
 // import * as filters from './assets/js/filters'
 
 import 'mint-ui/lib/style.css'
