@@ -11,42 +11,42 @@
         "level": 1,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084a258.png",
         "prizeId": "436066c40529401287658bfd67c1d346",
-        "commodityName": "3福币"
+        "commodityName": "ticket"
       }, {
         "level": 2,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084afeb.png",
         "prizeId": "acdcb838bda74ec8b1fd202234f852ec",
-        "commodityName": "200优惠劵"
+        "commodityName": "restart"
       }, {
         "level": 3,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084ab74.png",
         "prizeId": "484bf4c856b94265960b3e182e9f597f",
-        "commodityName": "100优惠劵"
+        "commodityName": "cart"
       }, {
         "level": 4,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084ad80.png",
         "prizeId": "d5c7784c4c4d4a33b141fc1be3b11a71",
-        "commodityName": "15福币"
+        "commodityName": "cupon"
       }, {
         "level": 5,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084a9fe.png",
         "prizeId": "7221846d585a4bed80bf486f94fcabae",
-        "commodityName": "10福币"
+        "commodityName": "gift"
       }, {
         "level": 6,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084b093.png",
         "prizeId": "33c6413801fd44c594cbf6642840a614",
-        "commodityName": "8福币"
+        "commodityName": "sorry"
       }, {
         "level": 7,
         "picUrlDesc": "https://i.loli.net/2019/03/12/5c8707084af09.png",
         "prizeId": "e453f94905334ea083fca649e87b3308",
-        "commodityName": "5福币"
+        "commodityName": "cloth"
       }, {
         "level": 8,
         "picUrlDesc":"https://i.loli.net/2019/03/12/5c8707084b1ba.png",
         "prizeId": "e8df88de1878428bb58d0cc9152d8849",
-        "commodityName": "3"
+        "commodityName": "redpacket"
       }],
       "beginTime": 1506519900000,
       "endTime": 1601446191000,

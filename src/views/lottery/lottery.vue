@@ -129,7 +129,8 @@ export default {
       prizers: [], // 获奖名单
       timeFlag: 0, // 时间标记，抽奖请求时间过长，则返回错误
       startStatus: '', // 活动开始的状态
-      jumpUrl: ''
+      jumpUrl: '',
+      adverId: ''
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -137,7 +138,6 @@ export default {
     next()
   },
   mounted () {
-    console.log(ecDo.trim('  1235asd '))
     this.$nextTick(() => {
       this.get()
       this.onInit()
@@ -149,9 +149,10 @@ export default {
   },
   methods: {
     get () {
-      this.$axios.get('http://localhost:8080/data/lotteryInfo.json').then((myData) => {
+      this.$axios.get('/dist/data/lotteryInfo.json').then((myData) => {
+      // this.$axios.get('../../../data/lotteryInfo.json').then((myData) => {
         let res = myData.data
-        console.log('res:', res)
+        // console.log('res:', res)
         if (res.success) {
           document.title = res.data.title
           this.remainingTimes = res.data.remainingTimes
@@ -250,14 +251,19 @@ export default {
       setTimeout(() => { // 顺序打乱
         if (this.prozeLevel == 2) {
           this.s2 = 7
+          console.log('this.s2', this.s2)
         } else if (this.prozeLevel == 3) {
           this.s2 = 4
+          console.log('this.s2', this.s2)
         } else if (this.prozeLevel == 4) {
           this.s2 = 3
+          console.log('this.s2', this.s2)
         } else if (this.prozeLevel == 7) {
           this.s2 = 2
+          console.log('this.s2', this.s2)
         } else {
           this.s2 = this.prozeLevel
+          console.log('this.s2', this.s2)
         }
       }, 900)
     },
@@ -286,37 +292,63 @@ export default {
               if (this.startStatus === 1) { // 活动开始
                 this.clickFlage = false// 不能点击
                 this.timer1 = setInterval(this.move, 100)
-                this.$axios.get('/data/adver/v2?gid=1').then(res => {
-                  if(res.data.errCode === 10000) {
-                    this.jumpUrl = res.data.url
-                  }
-                })
-                this.$axios.get('../../../data/prizeInfo.json').then((myData) => {
-                  let res = myData.data
-                  if (res.success) {
-                    this.prozeLevel = res.data.level
-                    this.prizeName = res.data.commodityName
-                    this.prizeUrl = res.data.picUrlWinning
+                // this.$axios.get('/dist/data/prizeInfo.json').then((myData) => {
+                // this.$axios.get('../../../data/prizeInfo.json').then((myData) => {
+                //   let res = myData.data
+                //   if (res.success) {
+                //     // this.prozeLevel = res.data.level
+                //     this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                //     this.prizeName = res.data.commodityName
+                //     this.prizeUrl = res.data.picUrlWinning
+                //     setTimeout(() => {
+                //       clearInterval(this.timer1)
+                //       this.lowSpeed()
+                //     }, 1200)
+                //   } else {
+                //     Toast({
+                //       message: res.bizMessage,
+                //       position: 'middle',
+                //       duration: 1500
+                //     })
+                //     this.clickFlage = false// 不能点击
+                //     clearInterval(this.timer1)
+                //     clearInterval(this.timer2)
+                //     // setTimeout(() => { // 刷新后重新加载
+                //     //   location.reload()
+                //     // }, 1500)
+                //   }
+                // }, false, true)
+                // // this.timer1 = setInterval(this.move, 100)
+                // // 请求，返回后给s定值
+
+                // 重写点击抽奖
+                this.$axios.all([this.$axios.get('/lottery/getPrize/v2?gid=1'),this.$axios.get('/dist/data/prizeInfo.json')]).then(this.$axios.spread((res1, res2)=>{
+                  // console.log('Res1',res1.data)
+                  // console.log('Res2',res2.data)
+                  let Res1 = res1.data,
+                      Res2 = res2.data
+                  if(Res1.errCode === 10000 && Res2.success === true){
+                    this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                    this.prizeName = Res1.data.showTitle
+                    this.prizeUrl = 'http://img.jslcoo.com/' + Res1.data.imgUrl
+                    this.jumpUrl = Res1.data.url
+                    this.adverId = Res1.data.id
                     setTimeout(() => {
                       clearInterval(this.timer1)
                       this.lowSpeed()
                     }, 1200)
                   } else {
                     Toast({
-                      message: res.bizMessage,
+                      message: '您未中奖',
                       position: 'middle',
                       duration: 1500
                     })
                     this.clickFlage = false// 不能点击
                     clearInterval(this.timer1)
                     clearInterval(this.timer2)
-                    // setTimeout(() => { // 刷新后重新加载
-                    //   location.reload()
-                    // }, 1500)
                   }
-                }, false, true)
-                // this.timer1 = setInterval(this.move, 100)
-                // 请求，返回后给s定值
+                }))
+
               } else if (this.startStatus === 0) { // 没开始
                 Toast({
                   message: '活动尚未开始',
@@ -369,11 +401,14 @@ export default {
       })
     },
     OnJump() {
+      this.$axios.get(`/data/adver?adverId=${this.adverId}`).then(res=>{
+        console.log(res)
+      })
       window.location.href= this.jumpUrl || "https://info.jslcmgs.com/index.html#/";
     },
     onInit() {
       this.$axios.get('/data/visit?gid=1').then(res => {
-        console.log('res',res)
+        console.log('init',res)
       })
     }
   }
@@ -771,7 +806,7 @@ export default {
       width: 9.22rem;
       height: 9.22rem;
       position: absolute;
-      top: 3rem;
+      top: 3.5rem;
       left: 50%;
       margin-left: -4.61rem;
       -webkit-animation: rotate 20s infinite linear;
