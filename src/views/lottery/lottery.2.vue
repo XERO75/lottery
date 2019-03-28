@@ -56,7 +56,6 @@
           </div>
         </div>
         <div class="havePrize" v-if="havePrizeShow">
-          <i class="iconfont icon-Close" @click="handleClose"></i>
           <div class="oneBar">
             <img src="../../assets/img/lottery/congra.png" />
           </div>
@@ -144,8 +143,8 @@ export default {
     this.$nextTick(() => {
       this.get()
       this.onInit()
-      this.startZhuan()
     })
+
   },
   // 销毁组件重新加载
   deactivated () {
@@ -156,6 +155,7 @@ export default {
       this.$axios.get('/dist/data/lotteryInfo.json').then((myData) => {
       // this.$axios.get('../../../data/lotteryInfo.json').then((myData) => {
         let res = myData.data
+        // console.log('res:', res)
         if (res.success) {
           document.title = res.data.title
           this.remainingTimes = res.data.remainingTimes
@@ -197,7 +197,7 @@ export default {
           this.$refs.pice[4].style.backgroundImage = 'url(' + notStart + ')'
         } else if (c > s && c < e) { // 当前时间大于开始时间，并且小于结束时间，已经开始未结束
           this.startStatus = 1
-          // this.$refs.pice[4].style.backgroundImage = 'url(' + prizeBtn + ')'
+          this.$refs.pice[4].style.backgroundImage = 'url(' + prizeBtn + ')'
         } else if (c > e) { // 当前时间大于结束时间，已经结束
           this.startStatus = 2
           this.$refs.pice[4].style.backgroundImage = 'url(' + endLottery + ')'
@@ -293,7 +293,66 @@ export default {
           if (this.remainingTimes > 0) { // 判断剩余抽奖次数
             if (this.clickFlage) {
               if (this.startStatus === 1) { // 活动开始
-                this.startZhuan()
+                this.clickFlage = false// 不能点击
+                this.timer1 = setInterval(this.move, 100)
+                // this.$axios.get('/dist/data/prizeInfo.json').then((myData) => {
+                // this.$axios.get('../../../data/prizeInfo.json').then((myData) => {
+                //   let res = myData.data
+                //   if (res.success) {
+                //     // this.prozeLevel = res.data.level
+                //     this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                //     this.prizeName = res.data.commodityName
+                //     this.prizeUrl = res.data.picUrlWinning
+                //     setTimeout(() => {
+                //       clearInterval(this.timer1)
+                //       this.lowSpeed()
+                //     }, 1200)
+                //   } else {
+                //     Toast({
+                //       message: res.bizMessage,
+                //       position: 'middle',
+                //       duration: 1500
+                //     })
+                //     this.clickFlage = false// 不能点击
+                //     clearInterval(this.timer1)
+                //     clearInterval(this.timer2)
+                //     // setTimeout(() => { // 刷新后重新加载
+                //     //   location.reload()
+                //     // }, 1500)
+                //   }
+                // }, false, true)
+                // // this.timer1 = setInterval(this.move, 100)
+                // // 请求，返回后给s定值
+
+                // 重写点击抽奖
+                this.$axios.all([this.$axios.get(`/lottery/getPrize/v2?gid=${this.$route.query.gid}`),this.$axios.get('/dist/data/prizeInfo.json')]).then(this.$axios.spread((res1, res2)=>{
+                  // console.log('Res1',res1.data)
+                  // console.log('Res2',res2.data)
+                  let Res1 = res1.data,
+                      Res2 = res2.data
+                  if(Res1.errCode === 10000 && Res2.success === true){
+                    // this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                    this.prozeLevel = Res1.data.level
+                    this.prizeName = Res1.data.showTitle
+                    this.prizeUrl = 'http://img.jslcoo.com/' + Res1.data.imgUrl
+                    this.jumpUrl = Res1.data.url
+                    this.adverId = Res1.data.id
+                    setTimeout(() => {
+                      clearInterval(this.timer1)
+                      this.lowSpeed()
+                    }, 1200)
+                  } else {
+                    Toast({
+                      message: '您未中奖',
+                      position: 'middle',
+                      duration: 1500
+                    })
+                    this.clickFlage = false// 不能点击
+                    clearInterval(this.timer1)
+                    clearInterval(this.timer2)
+                  }
+                }))
+
               } else if (this.startStatus === 0) { // 没开始
                 Toast({
                   message: '活动尚未开始',
@@ -354,89 +413,11 @@ export default {
     onInit() {
         this.$axios.get(`/data/visit?gid=${this.$route.query.gid}`).then(res => {
       })
-    },
-    startZhuan($event) {
-      console.log('event',$event);
-      this.clickFlage = false// 不能点击
-      this.timer1 = setInterval(this.move, 100)
-      // this.$axios.get('/dist/data/prizeInfo.json').then((myData) => {
-      // this.$axios.get('../../../data/prizeInfo.json').then((myData) => {
-      //   let res = myData.data
-      //   if (res.success) {
-      //     // this.prozeLevel = res.data.level
-      //     this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
-      //     this.prizeName = res.data.commodityName
-      //     this.prizeUrl = res.data.picUrlWinning
-      //     setTimeout(() => {
-      //       clearInterval(this.timer1)
-      //       this.lowSpeed()
-      //     }, 1200)
-      //   } else {
-      //     Toast({
-      //       message: res.bizMessage,
-      //       position: 'middle',
-      //       duration: 1500
-      //     })
-      //     this.clickFlage = false// 不能点击
-      //     clearInterval(this.timer1)
-      //     clearInterval(this.timer2)
-      //     // setTimeout(() => { // 刷新后重新加载
-      //     //   location.reload()
-      //     // }, 1500)
-      //   }
-      // }, false, true)
-      // // this.timer1 = setInterval(this.move, 100)
-      // // 请求，返回后给s定值
-
-      // 重写点击抽奖
-      this.$axios.all([this.$axios.get(`/lottery/getPrize/v2?gid=${this.$route.query.gid}`),this.$axios.get('/dist/data/prizeInfo.json')]).then(this.$axios.spread((res1, res2)=>{
-        // console.log('Res1',res1.data)
-        // console.log('Res2',res2.data)
-        let Res1 = res1.data,
-            Res2 = res2.data
-        if(Res1.errCode === 10000 && Res2.success === true){
-          // this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
-          this.prozeLevel = Res1.data.level
-          this.prizeName = Res1.data.showTitle
-          this.prizeUrl = 'http://img.jslcoo.com/' + Res1.data.imgUrl
-          this.jumpUrl = Res1.data.url
-          this.adverId = Res1.data.id
-          setTimeout(() => {
-            clearInterval(this.timer1)
-            this.lowSpeed()
-          }, 1200)
-        } else {
-          Toast({
-            message: '您未中奖',
-            position: 'middle',
-            duration: 1500
-          })
-          this.clickFlage = false// 不能点击
-          clearInterval(this.timer1)
-          clearInterval(this.timer2)
-        }
-      }))
-    },
-    handleClose() {
-      this.prizeInfoShow = false
-      // this.$nextTick(() => {
-      //   this.get()
-      //   this.onInit()
-      // })
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.icon-Close {
-  color: #ededed;
-  font-size: 18px;
-  // font-weight: bold;
-  position: absolute;
-  right: 10px;
-  top: 14px;
-  z-index: 100;
-}
 .lottery {
   background: #151539;
   position: relative;
@@ -828,7 +809,7 @@ export default {
       width: 9.22rem;
       height: 9.22rem;
       position: absolute;
-      top: 3.1rem;
+      top: 3.5rem;
       left: 50%;
       margin-left: -4.61rem;
       -webkit-animation: rotate 20s infinite linear;

@@ -13,6 +13,7 @@ import './assets/less/public.less'
 import * as filters from './assets/js/filters'
 
 import 'mint-ui/lib/style.css'
+import './assets/iconfont/iconfont.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
