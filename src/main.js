@@ -12,7 +12,7 @@ import './assets/less/public.less'
 import ecDo from './assets/js/ec-do-2.0.0.js'
 console.log(ecDo.trim('  1235asd '))
 
-// import * as filters from './assets/js/filters'
+import * as filters from './assets/js/filters'
 
 import 'mint-ui/lib/style.css'
 
@@ -26,38 +26,38 @@ new Vue({
 }).$mount('#app')
 
 // addroid控制字体不变大
-// if (!/ipad|iphone/i.test(navigator.userAgent)) {
-//   (function () {
-//     if (typeof WeixinJSBridge == 'object' && typeof WeixinJSBridge.invoke == 'function') {
-//       handleFontSize()
-//     } else {
-//       if (document.addEventListener) {
-//         document.addEventListener('WeixinJSBridgeReady', handleFontSize, false)
-//       } else if (document.attachEvent) {
-//         document.attachEvent('WeixinJSBridgeReady', handleFontSize)
-//         document.attachEvent('onWeixinJSBridgeReady', handleFontSize)
-//       }
-//     }
+if (!/ipad|iphone/i.test(navigator.userAgent)) {
+  (function () {
+    if (typeof WeixinJSBridge == 'object' && typeof WeixinJSBridge.invoke == 'function') {
+      handleFontSize()
+    } else {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', handleFontSize, false)
+      } else if (document.attachEvent) {
+        document.attachEvent('WeixinJSBridgeReady', handleFontSize)
+        document.attachEvent('onWeixinJSBridgeReady', handleFontSize)
+      }
+    }
 
-//     function handleFontSize () {
-//       // 设置网页字体为默认大小
-//       WeixinJSBridge.invoke('setFontSizeCallback', {
-//         'fontSize': 0
-//       })
-//       // 重写设置网页字体大小的事件
-//       WeixinJSBridge.on('menu:setfont', function () {
-//         WeixinJSBridge.invoke('setFontSizeCallback', {
-//           'fontSize': 0
-//         })
-//       })
-//     }
-//   })()
-// }
+    function handleFontSize () {
+      // 设置网页字体为默认大小
+      WeixinJSBridge.invoke('setFontSizeCallback', {
+        'fontSize': 0
+      })
+      // 重写设置网页字体大小的事件
+      WeixinJSBridge.on('menu:setfont', function () {
+        WeixinJSBridge.invoke('setFontSizeCallback', {
+          'fontSize': 0
+        })
+      })
+    }
+  })()
+}
 
 // 过滤器
-// Object.keys(filters).forEach(key => {
-//   Vue.filter(key, filters[key])
-// })
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 // 自定义指令页面title实时更新
 Vue.directive('title', {
   inserted: function (el, binding) {

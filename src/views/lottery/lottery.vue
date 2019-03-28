@@ -322,13 +322,14 @@ export default {
                 // // 请求，返回后给s定值
 
                 // 重写点击抽奖
-                this.$axios.all([this.$axios.get('/lottery/getPrize/v2?gid=1'),this.$axios.get('/dist/data/prizeInfo.json')]).then(this.$axios.spread((res1, res2)=>{
+                this.$axios.all([this.$axios.get(`/lottery/getPrize/v2?gid=${this.$route.query.gid}`),this.$axios.get('/dist/data/prizeInfo.json')]).then(this.$axios.spread((res1, res2)=>{
                   // console.log('Res1',res1.data)
                   // console.log('Res2',res2.data)
                   let Res1 = res1.data,
                       Res2 = res2.data
                   if(Res1.errCode === 10000 && Res2.success === true){
-                    this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                    // this.prozeLevel = ecDo.randomOne(['2','3','4','5','6','7','8'])
+                    this.prozeLevel = Res1.data.level
                     this.prizeName = Res1.data.showTitle
                     this.prizeUrl = 'http://img.jslcoo.com/' + Res1.data.imgUrl
                     this.jumpUrl = Res1.data.url
@@ -407,7 +408,8 @@ export default {
       window.location.href= this.jumpUrl || "https://info.jslcmgs.com/index.html#/";
     },
     onInit() {
-      this.$axios.get('/data/visit?gid=1').then(res => {
+      console.log(this.$route.query)
+      this.$axios.get(`/data/visit?gid=${this.$route.query.gid}`).then(res => {
         console.log('init',res)
       })
     }
