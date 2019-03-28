@@ -92,6 +92,8 @@ import endLottery from '@/assets/img/lottery/endLottery.png'
 import prizeBtn from '@/assets/img/lottery/prizeBtn.png'
 import { Toast } from 'mint-ui'
 import ecDo from '@/assets/js/ec-do-2.0.0.js'
+import { setTimeout } from 'timers';
+import { log } from 'util';
 
 export default {
   data () {
@@ -142,6 +144,7 @@ export default {
       this.get()
       this.onInit()
     })
+
   },
   // 销毁组件重新加载
   deactivated () {
@@ -408,9 +411,7 @@ export default {
       window.location.href= this.jumpUrl || "https://info.jslcmgs.com/index.html#/";
     },
     onInit() {
-      console.log(this.$route.query)
-      this.$axios.get(`/data/visit?gid=${this.$route.query.gid}`).then(res => {
-        console.log('init',res)
+        this.$axios.get(`/data/visit?gid=${this.$route.query.gid}`).then(res => {
       })
     }
   }
