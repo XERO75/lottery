@@ -144,8 +144,17 @@ export default {
     this.$nextTick(() => {
       this.get()
       this.onInit()
-      this.startZhuan()
+      console.log('this.$route.query.code',this.$route.query.code);
+      
+      if(this.$route.query.code === undefined){
+        this.startZhuan()
+      }
     })
+  },
+  watch: {
+    '$route'(to, from) {
+      
+    }
   },
   // 销毁组件重新加载
   deactivated () {
@@ -355,8 +364,7 @@ export default {
         this.$axios.get(`/data/visit?gid=${this.$route.query.gid}`).then(res => {
       })
     },
-    startZhuan($event) {
-      console.log('event',$event);
+    startZhuan() {
       this.clickFlage = false// 不能点击
       this.timer1 = setInterval(this.move, 100)
       // this.$axios.get('/dist/data/prizeInfo.json').then((myData) => {
@@ -419,10 +427,10 @@ export default {
     },
     handleClose() {
       this.prizeInfoShow = false
-      // this.$nextTick(() => {
-      //   this.get()
-      //   this.onInit()
-      // })
+      this.$router.push({
+        name: 'lottery',
+        query: {gid: 1, code: ecDo.randomNumber(2, 99)}
+      })
     }
   }
 }
